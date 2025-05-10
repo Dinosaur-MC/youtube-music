@@ -94,11 +94,8 @@ const sendError = (error: Error, source?: string) => {
 
   console.error(message);
   console.trace(error);
-  dialog.showMessageBox(win, {
-    type: 'info',
-    buttons: [t('plugins.downloader.backend.dialog.error.buttons.ok')],
-    title: t('plugins.downloader.backend.dialog.error.title'),
-    message: t('plugins.downloader.backend.dialog.error.message'),
+  win.webContents.send('show-error-message', {
+    message: t('plugins.downloader.backend.dialog.error.title'),
     detail: message,
   });
 };
@@ -454,6 +451,11 @@ async function downloadSongUnsafe(
 
   if (fileBuffer) {
     writeFileSync(filePath, fileBuffer);
+    win.webContents.send('show-success-message', {
+      message: t('plugins.downloader.backend.feedback.done', {
+        filePath
+      }),
+    });
   }
 
   sendFeedback(null, -1);

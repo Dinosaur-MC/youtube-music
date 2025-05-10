@@ -16,6 +16,8 @@ import type { RendererContext } from '@/types/contexts';
 
 import type { DownloaderPluginConfig } from './index';
 
+import type { AppElement } from '@/types/queue';
+
 let menu: Element | null = null;
 let progress: Element | null = null;
 const downloadButton = ElementFromHtml(downloadHTML);
@@ -119,6 +121,16 @@ export const onRendererLoad = ({
         t('plugins.downloader.renderer.can-not-update-progress'),
       );
     }
+  });
+
+  ipc.on('show-error-message', ({ message, detail } : { message: string, detail: string }) => {
+    const api = document.querySelector<AppElement>('ytmusic-app');
+    api?.toastService?.show(`[${message}] ${detail}`);
+  });
+  
+  ipc.on('show-success-message', ({ message }: { message: string }) => {
+    const api = document.querySelector<AppElement>('ytmusic-app');
+    api?.toastService?.show(message);
   });
 };
 
